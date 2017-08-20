@@ -1,0 +1,339 @@
+---
+title: "CaseStudy2"
+author: "Ernesto Carrera"
+date: "8/20/2017"
+output: html_document
+---
+
+
+
+## R Markdown
+
+The code for downloading, tyding  data in a R Markdown file.
+The files are included in a makefile format
+
+
+```{r}
+#downloading
+source("Download.R")
+
+#Cleaning
+source("Tyding.R")
+
+
+```
+
+
+Calculating the mean and median of the chunk circumferences for different sizes of the trees
+
+```{r}
+#MEAN
+MeanTree<-tapply(Orange$circumference , Orange$Tree , FUN=mean,na.rm=T)
+MeanTree
+
+MeanTree = as.data.frame(as.table(MeanTree))
+
+MeanTree[1,]
+str(MeanTree)
+
+#Changing the name of the columns
+colnames(MeanTree) <- c("Tree", "Average")
+str(MeanTree)
+
+#convert Tree to numeric
+MeanTree$Tree<-as.numeric(MeanTree$Tree)
+
+#Sort the data
+MeanTree<-MeanTree[with(MeanTree, order(Tree)), ]
+MeanTree
+
+#MEDIAN
+
+
+MedianTree<-tapply(Orange$circumference , Orange$Tree , FUN=median,na.rm=T)
+MedianTree
+
+MedianTree = as.data.frame(as.table(MedianTree))
+
+MedianTree[1,]
+str(MedianTree)
+
+#Chaging the name of the columns
+colnames(MedianTree) <- c("Tree", "Median")
+str(MedianTree)
+
+#convert Tree to numeric
+MedianTree$Tree<-as.numeric(MedianTree$Tree)
+
+#Sort the data
+MedianTree<-MedianTree[with(MedianTree, order(Tree)), ]
+MedianTree
+
+
+```
+
+ Scatterplot of the TRUNK circumferences against the age of the tree. 
+Using different plotting symbols for different size of trees
+
+```{r}
+library(ggplot2)
+ggplot(Orange,aes(x=circumference, y=age, color=Tree, shape=Tree)) + geom_point() + scale_shape_manual(values=c(1,2,3,4,5))
+
+#Saving the plot in png format to be displayed in Github
+ggsave("Plot2b.png")
+
+```
+
+![*Fig. * Trunk circumferences against the age of the tree](Plot2b.png)
+
+
+Displaying the trunk circumferences on a comparative boxplot against tree.
+
+```{r}
+
+ggplot(Orange, aes(x=Tree,y=circumference )) + geom_boxplot(fill="orange") +ggtitle("Boxplot of circumferences by Tree")
+
+#Saving the plot in png format to be displayed in Github
+ggsave("Plot2c.png")
+
+```
+
+
+![*Fig. * Trunk circumferences by tree](Plot2c.png)
+
+
+
+We will analyze the temperatures for countries and their corresponding cities
+
+
+```{r}
+
+#calculate the MAXIMUM by COUNTRY
+#, Temp$City
+MaxCountry<-tapply(Temp$Monthly.AverageTemp , Temp$Country , FUN=max,na.rm=T)
+#MaxCountry[10]
+
+MaxCountry = as.data.frame(as.table(MaxCountry))
+
+
+
+#Chaging the name of the columns
+colnames(MaxCountry) <- c("Country", "MaxTemp")
+
+
+
+MinCountry<-tapply(Temp$Monthly.AverageTemp , Temp$Country , FUN=min,na.rm=T)
+
+
+MinCountry = as.data.frame(as.table(MinCountry))
+
+
+
+#Chaging the name of the columns
+colnames(MinCountry) <- c("Country", "MinTemp")
+
+
+
+# merge two data frames by City
+Diff_CountryTemp <- merge(MinCountry,MaxCountry,by="Country")
+
+
+#calculate differences
+Diff_CountryTemp$Diff<- Diff_CountryTemp$MaxTemp - Diff_CountryTemp$MinTemp
+
+
+#Sort the data
+Diff_CountryTemp<-Diff_CountryTemp[with(Diff_CountryTemp, order(-Diff)), ]
+
+
+#select the top 20
+Top20DiffCountry<-Diff_CountryTemp[1:20,]
+#Top20DiffCountry
+  
+```
+
+The top 20 countries with the maximum monthly average temperatures since 1900 are:
+
+```{r}
+Top20DiffCountry[1:20,1]
+```
+
+Selecting a subset of US Temperatures and we the average monthly temperature is
+calculated in Fahrenheit.
+
+```{r}
+#Select US temperatures from 01/01/1900
+
+UStemp<-subset(Temp,Country=="United States" & DateF >="1900-01-01")
+#str(UStemp)
+
+#a calculate the average temperature in Fahrenheit
+UStemp$Monthly.AverageTemp.F<-UStemp$Monthly.AverageTemp*1.8 + 32
+```
+
+Calculating and plotting the average land temperature by year
+
+
+```{r}
+#adding a column with the year
+UStemp$year<-as.numeric(format(UStemp$DateF, "%Y")) 
+str(UStemp)
+
+#calculate the average by year
+UStemp2<-tapply(UStemp$Monthly.AverageTemp , UStemp$year, FUN=mean)
+UStemp2[1]
+
+UStemp2DF = as.data.frame(as.table(UStemp2))
+
+UStemp2DF[1,]
+
+#Chaging the name of the columns
+colnames(UStemp2DF) <- c("Year_t", "AverageTemp")
+str(UStemp2DF)
+
+#plotting the temperatures
+
+z<-ggplot(UStemp2DF,aes(x=Year_t, y=AverageTemp)) + geom_point() + coord_flip()  +
+  theme(axis.text.y = element_text(vjust = 1, size = 4))
+
+#Saving the plot in png format to be displayed in Github
+ggsave("Plot3iib.png")
+
+```
+![*Fig. * Average land temperature in the US](Plot3iib.png)
+
+
+
+Calculating the one year difference of average land temperature by year
+```{r}
+
+#shift the values of the rows down
+df <- na.omit(transform(UStemp2DF, AverageTemp_tM1 = c(NA, AverageTemp[-nrow(UStemp2DF)])))
+head(df)
+
+#calculate the differences
+df$diffTemYears<-df$AverageTemp - df$AverageTemp_tM1 
+#str(df)
+#head(df)
+
+#Selecting the MAXIMUM
+maxDiffYearsT<-max(df[,4], na.rm = TRUE)
+maxDiffYearsT
+
+#extract the conutry that contains the maximum difference
+TwoYearMax<-subset(df,diffTemYears==maxDiffYearsT)
+TwoYearMax
+#The maximum difference of average land temperature by year
+TwoYearMax_Answer<-"1920-1921"
+
+#TwoYearMax$Answer
+
+```
+
+The years with the maximum one year difference are: `r TwoYearMax_Answer`
+
+Now we will calculate the difference between the maximum and minimum temperatures
+for each major city
+
+```{r}
+#calculate the MAXIMUM by CITY
+#, CityTemp$City
+MaxCity<-tapply(CityTemp$Monthly.AverageTemp , CityTemp$City , FUN=max,na.rm=T)
+MaxCity[10]
+
+MaxCity = as.data.frame(as.table(MaxCity))
+
+MaxCity[1,]
+str(MaxCity)
+#Chaging the name of the columns
+colnames(MaxCity) <- c("City", "MaxTemp")
+str(MaxCity)
+
+
+MinCity<-tapply(CityTemp$Monthly.AverageTemp , CityTemp$City , FUN=min,na.rm=T)
+MinCity[10]
+
+MinCity = as.data.frame(as.table(MinCity))
+
+MinCity[1,]
+str(MinCity)
+
+#Chaging the name of the columns
+colnames(MinCity) <- c("City", "MinTemp")
+str(MinCity)
+
+
+# merge two data frames by City
+Diff_CityTemp <- merge(MinCity,MaxCity,by="City")
+str(Diff_CityTemp)
+head(Diff_CityTemp)
+
+#calculate differences
+Diff_CityTemp$Diff<- Diff_CityTemp$MaxTemp - Diff_CityTemp$MinTemp
+head(Diff_CityTemp)
+
+#Sort the data
+Diff_CityTemp<-Diff_CityTemp[with(Diff_CityTemp, order(-Diff)), ]
+
+
+#select the top 20
+Top20DiffCity<-Diff_CityTemp[1:20,]
+#Top20DiffCity
+
+```
+
+
+The top 20 cities with the maximum monthly average temperatures since 1900 are:
+
+```{r}
+Top20DiffCity[1:20,1]
+```
+
+Plotting the top 20 countries and cities with the maximum monthly average temperatures since 1900:
+
+```{r}
+
+##Plot the top 20 Countries
+library(ggplot2)
+plot1<-ggplot(Top20DiffCountry, aes(x=`Country`, y=`Diff`)) +
+  geom_point(color="blue")  +
+  coord_flip() +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    axis.line = element_line(color = 'black'),
+    panel.background = element_blank(),
+    axis.title.y = element_blank())
+
+
+
+
+
+##Plot the top 20 citites
+library(ggplot2)
+plot2<-ggplot(Top20DiffCity, aes(x=`City`, y=`Diff`)) +
+  geom_point(color="blue")  +
+  coord_flip() +
+  theme_bw() +
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_blank(),
+    axis.line = element_line(color = 'black'),
+    panel.background = element_blank(),
+    axis.title.y = element_blank())
+
+
+#Saving the plot in png format to be displayed in Github
+ggsave("plot1.png")
+ggsave("plot2.png")
+```
+
+
+![*Fig. * TOP 20 Countries with highest change in temperature](plot1.png)
+
+
+![*Fig. * TOP 20 Cities with highest change in temperature](plot2.png)
+
