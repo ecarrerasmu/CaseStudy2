@@ -103,7 +103,7 @@ ggsave("Plot2c.png")
 
 
 
-We will analyze the temperatures for countries and their corresponding cities
+We will analyze the temperatures for countries
 
 
 ```{r}
