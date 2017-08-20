@@ -2,7 +2,7 @@
 title: "CaseStudy2"
 author: "Ernesto Carrera"
 date: "8/20/2017"
-output: html_document
+output: md_document
 ---
 
 
