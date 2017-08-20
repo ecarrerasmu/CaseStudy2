@@ -503,3 +503,14 @@ average temperatures since 1900:
 ![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-12-2.png)
 
     detach(Top20DiffCity2)
+
+Conclusion
+----------
+
+With rising temperatures in countries all over the world, it is clear
+that the issue of climate change is a global problem. Finding the top 20
+cities with the greatest variation in average temperature allows us to
+localize the problem so that people in these communities can have a
+better understanding in how climate change could affect them and their
+families. Understanding that there is a problem is the first step in
+solving it.

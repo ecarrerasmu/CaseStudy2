@@ -1,6 +1,6 @@
 ---
 title: "CaseStudy2"
-author: "Ernesto Carrera"
+author: "Hancock, Austin-Carrera, Ernesto -Przybyla, Matthew "
 date: "8/20/2017"
 output: md_document
 ---
