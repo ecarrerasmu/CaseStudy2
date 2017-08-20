@@ -103,9 +103,7 @@ Scatterplot of the TRUNK circumferences against the age of the tree.
 Using different plotting symbols for different size of trees
 
     library(ggplot2)
-    ggplot(Orange,aes(x=circumference, y=age, color=Tree, shape=Tree)) + geom_point() + scale_shape_manual(values=c(1,2,3,4,5))
-
-![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+    pp<-ggplot(Orange,aes(x=circumference, y=age, color=Tree, shape=Tree)) + geom_point() + scale_shape_manual(values=c(1,2,3,4,5))
 
     #Saving the plot in png format to be displayed in Github
     ggsave("Plot2b.png")
@@ -117,9 +115,7 @@ Using different plotting symbols for different size of trees
 Displaying the trunk circumferences on a comparative boxplot against
 tree.
 
-    ggplot(Orange, aes(x=Tree,y=circumference )) + geom_boxplot(fill="orange") +ggtitle("Boxplot of circumferences by Tree")
-
-![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+    pppp<-ggplot(Orange, aes(x=Tree,y=circumference )) + geom_boxplot(fill="orange") +ggtitle("Boxplot of circumferences by Tree")
 
     #Saving the plot in png format to be displayed in Github
     ggsave("Plot2c.png")

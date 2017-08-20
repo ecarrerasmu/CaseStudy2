@@ -77,7 +77,7 @@ Using different plotting symbols for different size of trees
 
 ```{r}
 library(ggplot2)
-ggplot(Orange,aes(x=circumference, y=age, color=Tree, shape=Tree)) + geom_point() + scale_shape_manual(values=c(1,2,3,4,5))
+pp<-ggplot(Orange,aes(x=circumference, y=age, color=Tree, shape=Tree)) + geom_point() + scale_shape_manual(values=c(1,2,3,4,5))
 
 #Saving the plot in png format to be displayed in Github
 ggsave("Plot2b.png")
@@ -91,7 +91,7 @@ Displaying the trunk circumferences on a comparative boxplot against tree.
 
 ```{r}
 
-ggplot(Orange, aes(x=Tree,y=circumference )) + geom_boxplot(fill="orange") +ggtitle("Boxplot of circumferences by Tree")
+pppp<-ggplot(Orange, aes(x=Tree,y=circumference )) + geom_boxplot(fill="orange") +ggtitle("Boxplot of circumferences by Tree")
 
 #Saving the plot in png format to be displayed in Github
 ggsave("Plot2c.png")
