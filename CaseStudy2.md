@@ -77,7 +77,7 @@ different sizes of the trees
     ##  $ Var1: Factor w/ 5 levels "3","1","5","2",..: 1 2 3 4 5
     ##  $ Freq: num  108 115 125 156 167
 
-    #Chaging the name of the columns
+    #Changing the name of the columns
     colnames(MedianTree) <- c("Tree", "Median")
     str(MedianTree)
 
@@ -149,7 +149,7 @@ cities
 
 
     #Chaging the name of the columns
-    colnames(MinCountry) <- c("Country", "MinTemp")
+    colnames(MinCountry) <- c("Country", "MinAvgTemp")
 
 
 
@@ -158,7 +158,7 @@ cities
 
 
     #calculate differences
-    Diff_CountryTemp$Diff<- Diff_CountryTemp$MaxTemp - Diff_CountryTemp$MinTemp
+    Diff_CountryTemp$Diff<- Diff_CountryTemp$MaxTemp - Diff_CountryTemp$MinAvgTemp
 
 
     #Sort the data
@@ -169,8 +169,8 @@ cities
     Top20DiffCountry<-Diff_CountryTemp[1:20,]
     #Top20DiffCountry
 
-The top 20 countries with the maximum monthly average temperatures since
-1900 are:
+The top 20 countries with the greatest difference monthly average
+temperatures since 1900 are:
 
     Top20DiffCountry[1:20,1]
 
@@ -206,19 +206,19 @@ Calculating and plotting the average land temperature by year
     ##  $ Monthly.AverageTemp.F          : num  27.4 26.8 36.7 46.6 57.8 ...
     ##  $ year                           : num  1900 1900 1900 1900 1900 1900 1900 1900 1900 1900 ...
 
-    #calculate the average by year
-    UStemp2<-tapply(UStemp$Monthly.AverageTemp , UStemp$year, FUN=mean)
+    #calculate the average by year in Fahrenheit
+    UStemp2<-tapply(UStemp$Monthly.AverageTemp.F , UStemp$year, FUN=mean)
     UStemp2[1]
 
     ##     1900 
-    ## 9.021583
+    ## 48.23885
 
     UStemp2DF = as.data.frame(as.table(UStemp2))
 
     UStemp2DF[1,]
 
     ##   Var1     Freq
-    ## 1 1900 9.021583
+    ## 1 1900 48.23885
 
     #Chaging the name of the columns
     colnames(UStemp2DF) <- c("Year_t", "AverageTemp")
@@ -226,12 +226,12 @@ Calculating and plotting the average land temperature by year
 
     ## 'data.frame':    114 obs. of  2 variables:
     ##  $ Year_t     : Factor w/ 114 levels "1900","1901",..: 1 2 3 4 5 6 7 8 9 10 ...
-    ##  $ AverageTemp: num  9.02 8.49 8.45 7.98 8.2 ...
+    ##  $ AverageTemp: num  48.2 47.3 47.2 46.4 46.8 ...
 
     #plotting the temperatures
 
-    z<-ggplot(UStemp2DF,aes(x=Year_t, y=AverageTemp)) + geom_point() + coord_flip()  +
-      theme(axis.text.y = element_text(vjust = 1, size = 4))
+    z<-ggplot(UStemp2DF,aes(x=Year_t, y=AverageTemp)) + geom_point() + 
+      theme(axis.text.x = element_blank()) +  labs(x="Year (1900-2013)")
 
     #Saving the plot in png format to be displayed in Github
     ggsave("Plot3iib.png")
@@ -247,12 +247,12 @@ Calculating the one year difference of average land temperature by year
     head(df)
 
     ##   Year_t AverageTemp AverageTemp_tM1
-    ## 2   1901    8.494917        9.021583
-    ## 3   1902    8.454000        8.494917
-    ## 4   1903    7.977250        8.454000
-    ## 5   1904    8.200667        7.977250
-    ## 6   1905    8.402333        8.200667
-    ## 7   1906    8.560083        8.402333
+    ## 2   1901    47.29085        48.23885
+    ## 3   1902    47.21720        47.29085
+    ## 4   1903    46.35905        47.21720
+    ## 5   1904    46.76120        46.35905
+    ## 6   1905    47.12420        46.76120
+    ## 7   1906    47.40815        47.12420
 
     #calculate the differences
     df$diffTemYears<-df$AverageTemp - df$AverageTemp_tM1 
@@ -263,14 +263,14 @@ Calculating the one year difference of average land temperature by year
     maxDiffYearsT<-max(df[,4], na.rm = TRUE)
     maxDiffYearsT
 
-    ## [1] 1.411167
+    ## [1] 2.5401
 
-    #extract the conutry that contains the maximum difference
+    #extract the country that contains the maximum difference
     TwoYearMax<-subset(df,diffTemYears==maxDiffYearsT)
     TwoYearMax
 
     ##    Year_t AverageTemp AverageTemp_tM1 diffTemYears
-    ## 22   1921    9.595667          8.1845     1.411167
+    ## 22   1921     49.2722         46.7321       2.5401
 
     #The maximum difference of average land temperature by year
     TwoYearMax_Answer<-"1920-1921"
@@ -304,12 +304,12 @@ temperatures for each major city
     ##  $ Freq: num  21.2 35.4 32.6 28.8 26 ...
 
     #Chaging the name of the columns
-    colnames(MaxCity) <- c("City", "MaxTemp")
+    colnames(MaxCity) <- c("City", "MaxAvgTemp")
     str(MaxCity)
 
     ## 'data.frame':    99 obs. of  2 variables:
-    ##  $ City   : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
-    ##  $ MaxTemp: num  21.2 35.4 32.6 28.8 26 ...
+    ##  $ City      : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ MaxAvgTemp: num  21.2 35.4 32.6 28.8 26 ...
 
     MinCity<-tapply(CityTemp$Monthly.AverageTemp , CityTemp$City , FUN=min,na.rm=T)
     MinCity[10]
@@ -331,43 +331,43 @@ temperatures for each major city
     ##  $ Freq: num  14.53 17.32 1.09 12.17 -6.2 ...
 
     #Chaging the name of the columns
-    colnames(MinCity) <- c("City", "MinTemp")
+    colnames(MinCity) <- c("City", "MinAvgTemp")
     str(MinCity)
 
     ## 'data.frame':    99 obs. of  2 variables:
-    ##  $ City   : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
-    ##  $ MinTemp: num  14.53 17.32 1.09 12.17 -6.2 ...
+    ##  $ City      : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ MinAvgTemp: num  14.53 17.32 1.09 12.17 -6.2 ...
 
     # merge two data frames by City
     Diff_CityTemp <- merge(MinCity,MaxCity,by="City")
     str(Diff_CityTemp)
 
     ## 'data.frame':    99 obs. of  3 variables:
-    ##  $ City   : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
-    ##  $ MinTemp: num  14.53 17.32 1.09 12.17 -6.2 ...
-    ##  $ MaxTemp: num  21.2 35.4 32.6 28.8 26 ...
+    ##  $ City      : Factor w/ 99 levels "Addis Abeba",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ MinAvgTemp: num  14.53 17.32 1.09 12.17 -6.2 ...
+    ##  $ MaxAvgTemp: num  21.2 35.4 32.6 28.8 26 ...
 
     head(Diff_CityTemp)
 
-    ##          City MinTemp MaxTemp
-    ## 1 Addis Abeba  14.528  21.223
-    ## 2   Ahmadabad  17.320  35.419
-    ## 3      Aleppo   1.086  32.629
-    ## 4  Alexandria  12.171  28.806
-    ## 5      Ankara  -6.195  26.044
-    ## 6     Baghdad   4.236  38.283
+    ##          City MinAvgTemp MaxAvgTemp
+    ## 1 Addis Abeba     14.528     21.223
+    ## 2   Ahmadabad     17.320     35.419
+    ## 3      Aleppo      1.086     32.629
+    ## 4  Alexandria     12.171     28.806
+    ## 5      Ankara     -6.195     26.044
+    ## 6     Baghdad      4.236     38.283
 
     #calculate differences
-    Diff_CityTemp$Diff<- Diff_CityTemp$MaxTemp - Diff_CityTemp$MinTemp
+    Diff_CityTemp$Diff<- Diff_CityTemp$MaxAvgTemp - Diff_CityTemp$MinAvgTemp
     head(Diff_CityTemp)
 
-    ##          City MinTemp MaxTemp   Diff
-    ## 1 Addis Abeba  14.528  21.223  6.695
-    ## 2   Ahmadabad  17.320  35.419 18.099
-    ## 3      Aleppo   1.086  32.629 31.543
-    ## 4  Alexandria  12.171  28.806 16.635
-    ## 5      Ankara  -6.195  26.044 32.239
-    ## 6     Baghdad   4.236  38.283 34.047
+    ##          City MinAvgTemp MaxAvgTemp   Diff
+    ## 1 Addis Abeba     14.528     21.223  6.695
+    ## 2   Ahmadabad     17.320     35.419 18.099
+    ## 3      Aleppo      1.086     32.629 31.543
+    ## 4  Alexandria     12.171     28.806 16.635
+    ## 5      Ankara     -6.195     26.044 32.239
+    ## 6     Baghdad      4.236     38.283 34.047
 
     #Sort the data
     Diff_CityTemp<-Diff_CityTemp[with(Diff_CityTemp, order(-Diff)), ]
@@ -377,8 +377,8 @@ temperatures for each major city
     Top20DiffCity<-Diff_CityTemp[1:20,]
     #Top20DiffCity
 
-The top 20 cities with the maximum monthly average temperatures since
-1900 are:
+The top 20 cities with the greatest difference monthly average
+temperatures since 1900 are:
 
     Top20DiffCity[1:20,1]
 
@@ -393,48 +393,57 @@ Plotting the top 20 countries and cities with the maximum monthly
 average temperatures since 1900:
 
     ##Plot the top 20 Countries
-    library(ggplot2)
-    plot1<-ggplot(Top20DiffCountry, aes(x=`Country`, y=`Diff`)) +
-      geom_point(color="blue")  +
-      coord_flip() +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(color = 'black'),
-        panel.background = element_blank(),
-        axis.title.y = element_blank())
+    ##visualize(i)
+    ##visualize(i)
+    Top20DiffCountry2 <- Top20DiffCountry[order(Top20DiffCountry[,4], decreasing=FALSE),]
+    attach(Top20DiffCountry2)
+    barplot(Diff, 
+            names.arg = substr(Country,0,5), 
+            horiz = TRUE,
+            main  = 'Difference in Average Max and Min Temperature',
+            las=1,
+            col=ifelse(Diff > 45, 
+                       "red", 
+                       ifelse(Diff > 40, 
+                              "Orange", 
+                              ifelse(Diff > 35,
+                                     "Yellow",
+                                     "Green")
+                              )
+                       )
+            )
+    legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
+
+![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+
+    detach(Top20DiffCountry2)
+
 
 
 
 
 
     ##Plot the top 20 citites
-    library(ggplot2)
-    plot2<-ggplot(Top20DiffCity, aes(x=`City`, y=`Diff`)) +
-      geom_point(color="blue")  +
-      coord_flip() +
-      theme_bw() +
-      theme(
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_line(color = 'black'),
-        panel.background = element_blank(),
-        axis.title.y = element_blank())
+    ##visualize(i)
+    Top20DiffCity2 <- Top20DiffCity[order(Top20DiffCity[,4], decreasing=FALSE),]
+    attach(Top20DiffCity2)
+    barplot(Diff, 
+            names.arg = substr(City,0,5), 
+            horiz = TRUE,
+            main  = 'Difference in Average Max and Min Temperature',
+            las=1,
+            col=ifelse(Diff > 45, 
+                       "red", 
+                       ifelse(Diff > 40, 
+                              "Orange", 
+                              ifelse(Diff > 35,
+                                     "Yellow",
+                                     "Green")
+                              )
+                       )
+            )
+    legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
 
+![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-12-2.png)
 
-    #Saving the plot in png format to be displayed in Github
-    ggsave("plot1.png")
-
-    ## Saving 7 x 5 in image
-
-    ggsave("plot2.png")
-
-    ## Saving 7 x 5 in image
-
-![*Fig. * TOP 20 Countries with highest change in
-temperature](plot1.png)
-
-![*Fig. * TOP 20 Cities with highest change in temperature](plot2.png)
+    detach(Top20DiffCity2)

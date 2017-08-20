@@ -58,7 +58,7 @@ MedianTree = as.data.frame(as.table(MedianTree))
 MedianTree[1,]
 str(MedianTree)
 
-#Chaging the name of the columns
+#Changing the name of the columns
 colnames(MedianTree) <- c("Tree", "Median")
 str(MedianTree)
 
@@ -130,7 +130,7 @@ MinCountry = as.data.frame(as.table(MinCountry))
 
 
 #Chaging the name of the columns
-colnames(MinCountry) <- c("Country", "MinTemp")
+colnames(MinCountry) <- c("Country", "MinAvgTemp")
 
 
 
@@ -139,7 +139,7 @@ Diff_CountryTemp <- merge(MinCountry,MaxCountry,by="Country")
 
 
 #calculate differences
-Diff_CountryTemp$Diff<- Diff_CountryTemp$MaxTemp - Diff_CountryTemp$MinTemp
+Diff_CountryTemp$Diff<- Diff_CountryTemp$MaxTemp - Diff_CountryTemp$MinAvgTemp
 
 
 #Sort the data
@@ -150,12 +150,14 @@ Diff_CountryTemp<-Diff_CountryTemp[with(Diff_CountryTemp, order(-Diff)), ]
 Top20DiffCountry<-Diff_CountryTemp[1:20,]
 #Top20DiffCountry
   
+  
 ```
 
-The top 20 countries with the maximum monthly average temperatures since 1900 are:
+The top 20 countries with the greatest difference monthly average temperatures since 1900 are:
 
 ```{r}
 Top20DiffCountry[1:20,1]
+
 ```
 
 Selecting a subset of US Temperatures and we the average monthly temperature is
@@ -179,8 +181,8 @@ Calculating and plotting the average land temperature by year
 UStemp$year<-as.numeric(format(UStemp$DateF, "%Y")) 
 str(UStemp)
 
-#calculate the average by year
-UStemp2<-tapply(UStemp$Monthly.AverageTemp , UStemp$year, FUN=mean)
+#calculate the average by year in Fahrenheit
+UStemp2<-tapply(UStemp$Monthly.AverageTemp.F , UStemp$year, FUN=mean)
 UStemp2[1]
 
 UStemp2DF = as.data.frame(as.table(UStemp2))
@@ -193,8 +195,8 @@ str(UStemp2DF)
 
 #plotting the temperatures
 
-z<-ggplot(UStemp2DF,aes(x=Year_t, y=AverageTemp)) + geom_point() + coord_flip()  +
-  theme(axis.text.y = element_text(vjust = 1, size = 4))
+z<-ggplot(UStemp2DF,aes(x=Year_t, y=AverageTemp)) + geom_point() + 
+  theme(axis.text.x = element_blank()) +  labs(x="Year (1900-2013)")
 
 #Saving the plot in png format to be displayed in Github
 ggsave("Plot3iib.png")
@@ -220,7 +222,7 @@ df$diffTemYears<-df$AverageTemp - df$AverageTemp_tM1
 maxDiffYearsT<-max(df[,4], na.rm = TRUE)
 maxDiffYearsT
 
-#extract the conutry that contains the maximum difference
+#extract the country that contains the maximum difference
 TwoYearMax<-subset(df,diffTemYears==maxDiffYearsT)
 TwoYearMax
 #The maximum difference of average land temperature by year
@@ -246,7 +248,7 @@ MaxCity = as.data.frame(as.table(MaxCity))
 MaxCity[1,]
 str(MaxCity)
 #Chaging the name of the columns
-colnames(MaxCity) <- c("City", "MaxTemp")
+colnames(MaxCity) <- c("City", "MaxAvgTemp")
 str(MaxCity)
 
 
@@ -259,7 +261,7 @@ MinCity[1,]
 str(MinCity)
 
 #Chaging the name of the columns
-colnames(MinCity) <- c("City", "MinTemp")
+colnames(MinCity) <- c("City", "MinAvgTemp")
 str(MinCity)
 
 
@@ -269,7 +271,7 @@ str(Diff_CityTemp)
 head(Diff_CityTemp)
 
 #calculate differences
-Diff_CityTemp$Diff<- Diff_CityTemp$MaxTemp - Diff_CityTemp$MinTemp
+Diff_CityTemp$Diff<- Diff_CityTemp$MaxAvgTemp - Diff_CityTemp$MinAvgTemp
 head(Diff_CityTemp)
 
 #Sort the data
@@ -283,7 +285,7 @@ Top20DiffCity<-Diff_CityTemp[1:20,]
 ```
 
 
-The top 20 cities with the maximum monthly average temperatures since 1900 are:
+The top 20 cities with the greatest difference monthly average temperatures since 1900 are:
 
 ```{r}
 Top20DiffCity[1:20,1]
@@ -294,46 +296,58 @@ Plotting the top 20 countries and cities with the maximum monthly average temper
 ```{r}
 
 ##Plot the top 20 Countries
-library(ggplot2)
-plot1<-ggplot(Top20DiffCountry, aes(x=`Country`, y=`Diff`)) +
-  geom_point(color="blue")  +
-  coord_flip() +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    axis.line = element_line(color = 'black'),
-    panel.background = element_blank(),
-    axis.title.y = element_blank())
+##visualize(i)
+##visualize(i)
+Top20DiffCountry2 <- Top20DiffCountry[order(Top20DiffCountry[,4], decreasing=FALSE),]
+attach(Top20DiffCountry2)
+barplot(Diff, 
+        names.arg = substr(Country,0,5), 
+        horiz = TRUE,
+        main  = 'Difference in Average Max and Min Temperature',
+        las=1,
+        col=ifelse(Diff > 45, 
+                   "red", 
+                   ifelse(Diff > 40, 
+                          "Orange", 
+                          ifelse(Diff > 35,
+                                 "Yellow",
+                                 "Green")
+                          )
+                   )
+        )
+legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
+detach(Top20DiffCountry2)
+
 
 
 
 
 
 ##Plot the top 20 citites
-library(ggplot2)
-plot2<-ggplot(Top20DiffCity, aes(x=`City`, y=`Diff`)) +
-  geom_point(color="blue")  +
-  coord_flip() +
-  theme_bw() +
-  theme(
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    axis.line = element_line(color = 'black'),
-    panel.background = element_blank(),
-    axis.title.y = element_blank())
-
-
-#Saving the plot in png format to be displayed in Github
-ggsave("plot1.png")
-ggsave("plot2.png")
+##visualize(i)
+Top20DiffCity2 <- Top20DiffCity[order(Top20DiffCity[,4], decreasing=FALSE),]
+attach(Top20DiffCity2)
+barplot(Diff, 
+        names.arg = substr(City,0,5), 
+        horiz = TRUE,
+        main  = 'Difference in Average Max and Min Temperature',
+        las=1,
+        col=ifelse(Diff > 45, 
+                   "red", 
+                   ifelse(Diff > 40, 
+                          "Orange", 
+                          ifelse(Diff > 35,
+                                 "Yellow",
+                                 "Green")
+                          )
+                   )
+        )
+legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
+detach(Top20DiffCity2)
 ```
 
 
-![*Fig. * TOP 20 Countries with highest change in temperature](plot1.png)
 
 
-![*Fig. * TOP 20 Cities with highest change in temperature](plot2.png)
+
 
