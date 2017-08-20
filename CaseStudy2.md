@@ -1,3 +1,13 @@
+Introduction
+------------
+
+Climate change. The hot topic of the decade does not relegate its’
+effects to the country with the largest carbon footprint, but rather to
+the world as a whole. For a quick glance at the rising temperatures
+around the globe, we investigated the difference between maximum and
+minimum average monthly temperatures for different countries and cities
+dating back to 1900. Below are our findings.
+
 R Markdown
 ----------
 
@@ -99,6 +109,20 @@ different sizes of the trees
     ## 4    4    156
     ## 5    5    167
 
+The average trunk circumference for each tree is:
+
+    1   94.00000        
+    2   99.57143        
+    3   111.14286       
+    4   135.28571       
+    5   139.2857
+
+The median trunk circumference for each tree is 1 108  
+2 115  
+3 125  
+4 156  
+5 167
+
 Scatterplot of the TRUNK circumferences against the age of the tree.
 Using different plotting symbols for different size of trees
 
@@ -124,8 +148,7 @@ tree.
 
 ![*Fig. * Trunk circumferences by tree](Plot2c.png)
 
-We will analyze the temperatures for countries and their corresponding
-cities
+We will analyze the temperatures for countries
 
     #calculate the MAXIMUM by COUNTRY
     #, Temp$City
@@ -170,7 +193,11 @@ cities
     #Top20DiffCountry
 
 The top 20 countries with the greatest difference monthly average
-temperatures since 1900 are:
+temperatures since 1900 are: 1. Kazakhstan 2. Mongolia 3. Russia 4.
+Canada 5. Uzbekistan  
+6. Turkmenistan 7. Belarus 8. Finland 9. Estonia 10. Ukraine  
+11. Kyrgyzstan 12. North Korea 13. Latvia 14. Moldova 15. Greenland  
+16. Denmark 17. Lithuania 18. Tajikistan 19. Poland 20. Armenia
 
     Top20DiffCountry[1:20,1]
 
@@ -402,7 +429,12 @@ temperatures for each major city
     #Top20DiffCity
 
 The top 20 cities with the greatest difference monthly average
-temperatures since 1900 are:
+temperatures since 1900 are: 1. Harbin 2. Changchun 3. Moscow 4.
+Shenyang  
+5. Montreal 6. Kiev 7. Saint Petersburg 8. Toronto  
+9. Taiyuan 10. Peking 11. Tianjin 12. Seoul  
+13. Mashhad 14. Dalian 15. Chicago 16. Tangshan  
+17. New York 18. Baghdad 19. Berlin 20. Jinan
 
     Top20DiffCity[1:20,1]
 
