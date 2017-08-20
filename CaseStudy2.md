@@ -180,6 +180,30 @@ temperatures since 1900 are:
     ## [16] Denmark      Lithuania    Tajikistan   Poland       Armenia     
     ## 238 Levels: Afghanistan Albania Algeria American Samoa Andorra ... Zimbabwe
 
+    ##visualize(i)
+    Top20DiffCountry2 <- Top20DiffCountry[order(Top20DiffCountry[,4], decreasing=FALSE),]
+    attach(Top20DiffCountry2)
+    barplot(Diff, 
+            names.arg = substr(Country,0,5), 
+            horiz = TRUE,
+            main  = 'Difference in Average Max and Min Temperature',
+            las=1,
+            col=ifelse(Diff > 45, 
+                       "red", 
+                       ifelse(Diff > 40, 
+                              "Orange", 
+                              ifelse(Diff > 35,
+                                     "Yellow",
+                                     "Green")
+                              )
+                       )
+            )
+    legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
+
+![](CaseStudy2_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+
+    detach(Top20DiffCountry2)
+
 Selecting a subset of US Temperatures and we the average monthly
 temperature is calculated in Fahrenheit.
 

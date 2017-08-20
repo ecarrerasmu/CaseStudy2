@@ -158,6 +158,26 @@ The top 20 countries with the greatest difference monthly average temperatures s
 ```{r}
 Top20DiffCountry[1:20,1]
 
+##visualize(i)
+Top20DiffCountry2 <- Top20DiffCountry[order(Top20DiffCountry[,4], decreasing=FALSE),]
+attach(Top20DiffCountry2)
+barplot(Diff, 
+        names.arg = substr(Country,0,5), 
+        horiz = TRUE,
+        main  = 'Difference in Average Max and Min Temperature',
+        las=1,
+        col=ifelse(Diff > 45, 
+                   "red", 
+                   ifelse(Diff > 40, 
+                          "Orange", 
+                          ifelse(Diff > 35,
+                                 "Yellow",
+                                 "Green")
+                          )
+                   )
+        )
+legend("bottomright", legend = c(">45", "40-45","35-40","<35"), fill=c("red", "Orange", "Yellow", "Green"))
+detach(Top20DiffCountry2)
 ```
 
 Selecting a subset of US Temperatures and we the average monthly temperature is
